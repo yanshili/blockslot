@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-apply from: rootProject.file('Config.gradle')
+apply from: rootProject.file('butterknife.gradle')
 
 android {
     compileSdkVersion 24
@@ -31,5 +31,4 @@ dependencies {
 
     compile project(':blockslot')
 
-    compile 'com.jakewharton:butterknife:8.8.1'
 }
