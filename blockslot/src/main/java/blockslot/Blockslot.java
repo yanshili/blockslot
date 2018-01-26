@@ -11,7 +11,7 @@ package blockslot;
  *       业务模块均可独立运行），除了基础业务外其他业务之间无相互依赖关系。
  * 原理： 用注解标志指定插槽并生成代码缓存插槽信息（暂时只标注函数），最后通过{@link Blockslot}工
  *       具根据插槽信息利用反射连接插槽
- *
+ * 注意： 混淆时添加-keep class blockslot.** {*;}
  */
 
 public class Blockslot {
