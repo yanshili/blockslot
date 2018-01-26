@@ -4,6 +4,8 @@ import java.io.Writer;
 
 import javax.tools.JavaFileObject;
 
+import blockslot.compiler.model.MethodInfo;
+
 /**
  * 作者： mooney
  * 日期： 2018/1/25
@@ -31,7 +33,7 @@ public class GeneratorBlockslotFileHelper {
 
         builder.append("import java.util.HashMap;\n");
         builder.append("import java.util.Map;\n");
-        builder.append("import blockslot.internal.model.MethodInfo;\n\n");
+        builder.append("import " + MethodInfo.class.getCanonicalName()+";\n\n");
 
 
         builder.append("public class " + clsName + "{\n\n");

@@ -1,1 +1,1 @@
-include ':app', ':blockslot-compiler'
+include ':app', ':blockslot', ':blockslot-compiler', ':blockslot-annotations'

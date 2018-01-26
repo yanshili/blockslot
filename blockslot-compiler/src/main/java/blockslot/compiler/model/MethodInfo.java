@@ -1,4 +1,4 @@
-package blockslot.internal.model;
+package blockslot.compiler.model;
 
 import java.io.Serializable;
 

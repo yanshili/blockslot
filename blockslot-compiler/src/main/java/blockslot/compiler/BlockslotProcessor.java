@@ -25,7 +25,7 @@ import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
 
 import blockslot.annotations.MethodSlot;
-import blockslot.internal.model.MethodInfo;
+import blockslot.compiler.model.MethodInfo;
 
 
 /**

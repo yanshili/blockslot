@@ -1,7 +1,7 @@
 package blockslot;
 
 
-import blockslot.internal.model.MethodInfo;
+import blockslot.compiler.model.MethodInfo;
 
 /**
  * 作者： mooney
