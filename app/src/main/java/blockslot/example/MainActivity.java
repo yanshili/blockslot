@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.tv_main)
     protected void onTvMainClick(){
-        toast((String) Blockslot.invoke(this,"app#get","on click !!!"));
+        toast((String) Blockslot.invokeS("app#get","on clicks !!!"));
     }
 
 
@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @MethodSlot("app#get")
-    private String getMessage(String m){
+    private static String getMessage(String m){
         return "slot message=="+m;
     }
 }
