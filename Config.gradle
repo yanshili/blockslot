@@ -1,0 +1,5 @@
+apply plugin: 'com.jakewharton.butterknife'
+
+dependencies{
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+}
