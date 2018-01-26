@@ -3,9 +3,9 @@ apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 
 //项目主页--项目的GitHub地址
-def siteUrl = 'https://github.com/yanshili/blockslot'
+def siteUrl = BLOCKSLOT_SITE_URL
 //项目的git地址
-def gitUrl = 'https://github.com/yanshili/blockslot.git'
+def gitUrl = BLOCKSLOT_GIT_URL
 
 //发布到JCenter上的项目名字，compile引用时的第2部分项目名
 def libName = "blockslot-annotations"
@@ -13,9 +13,9 @@ def libName = "blockslot-annotations"
 //打包类型
 def pkgType = 'jar'
 //compile引用时的第1部分
-group = "me.mooney"
+group = BLOCKSLOT_GROUP
 // 版本号，//compile引用时的最后部分项目名，下次更新是只需要更改版本号即可
-version = "0.2.0"
+version = BLOCKSLOT_VERSION
 //上面配置后上传至JCenter后的编译路径是这样的： compile 'me.mooney:blockslot:0.2.0'
 
 //生成源文件
@@ -70,9 +70,9 @@ install {
                 developers {
                     developer {
                         //开发者的个人信息，根据个人信息填写
-                        id 'mooney'
-                        name 'mooney'
-                        email 'yanshilioo@gmail.com'
+                        id DEVELOPER_ID
+                        name DEVELOPER_NAME
+                        email DEVELOPER_EMAIL
                     }
                 }
                 scm {
@@ -95,7 +95,7 @@ bintray {
     configurations = ['archives']
     pkg {
         //这里的repo值必须要和你创建Maven仓库的时候的名字一样，我们前面创建的就是maven
-        repo = "blockslot"
+        repo = BLOCKSLOT_REPO
         //发布到JCenter上的项目名字
         name = libName
         //项目描述
