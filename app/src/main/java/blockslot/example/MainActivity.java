@@ -2,6 +2,7 @@ package blockslot.example;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +32,11 @@ public class MainActivity extends AppCompatActivity {
     @OnClick(R.id.tv_main)
     protected void onTvMainClick(){
         toast((String) Blockslot.invokeS("app#get","on clicks !!!"));
+        Test test=Blockslot.newInstance("test#constructor",23);
+        Log.e("MainActivity","test newInstance times=="+test.getTimes());
+        test.setTimes(5);
+        int times=Blockslot.invoke(test,"test#getTimes");
+        Log.e("MainActivity","test invoke times=="+times);
     }
 
 

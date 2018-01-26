@@ -1,5 +1,6 @@
 package blockslot;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +14,16 @@ import java.util.List;
 
 class BlockslotReflectUtils {
 
-
+    /**
+     * 调用普通函数
+     * @param target
+     * @param methodName
+     * @param parameterTypes
+     * @param parameters
+     * @param <T>
+     * @return
+     * @throws Exception
+     */
     public static <T> T invoke(Object target, String methodName, Class[] parameterTypes, Object... parameters)
             throws Exception {
 
@@ -22,11 +32,38 @@ class BlockslotReflectUtils {
     }
 
 
+    /**
+     * 调用静态函数
+     * @param cls
+     * @param methodName
+     * @param parameterTypes
+     * @param parameters
+     * @param <T>
+     * @return
+     * @throws Exception
+     */
     public static <T> T invokeS(Class<?> cls, String methodName, Class[] parameterTypes, Object... parameters)
             throws Exception {
 
         return (T) getMethodS(cls, methodName, parameterTypes)
                 .invoke(null, getRealParameters(parameterTypes, parameters));
+
+    }
+
+    /**
+     * 调用构造函数
+     * @param cls
+     * @param parameterTypes
+     * @param parameters
+     * @param <T>
+     * @return
+     * @throws Exception
+     */
+    public static <T> T newInstance(Class<?> cls, Class[] parameterTypes, Object... parameters)
+            throws Exception {
+
+        return (T)getConstructor(cls,parameterTypes).newInstance(getRealParameters(parameterTypes, parameters));
+
     }
 
 
@@ -47,7 +84,7 @@ class BlockslotReflectUtils {
 
             if (parameters!=null&&validIndex<parameters.length){
                 Object instance=parameters[validIndex];
-                if (clz.isInstance(instance)){
+                if (matchClass(clz, instance)){
                     realParameters[i]=instance;
                     validIndex++;
 
@@ -83,6 +120,37 @@ class BlockslotReflectUtils {
         }else {
             return null;
         }
+    }
+
+    /**
+     * 判断{@param object}是否为{@param clz}类的实例
+     *
+     * @param clz
+     * @param object
+     * @return
+     */
+    private static boolean matchClass(Class clz, Object object){
+
+        if (clz==byte.class){
+            return Byte.class.isInstance(object);
+        }else if (clz==short.class){
+            return Short.class.isInstance(object);
+        }else if (clz==int.class){
+            return Integer.class.isInstance(object);
+        }else if (clz==long.class){
+            return Long.class.isInstance(object);
+        }else if (clz==float.class){
+            return Float.class.isInstance(object);
+        }else if (clz==double.class){
+            return Double.class.isInstance(object);
+        }else if (clz==char.class){
+            return Character.class.isInstance(object);
+        }else if (clz==boolean.class){
+            return Boolean.class.isInstance(object);
+        }else {
+            return clz.isInstance(object);
+        }
+
     }
 
     /**
@@ -193,6 +261,49 @@ class BlockslotReflectUtils {
         Class<?> cls = target.getClass();
 
         return getMethodS(cls,methodName, parameterTypes);
+    }
+
+    /**
+     * 根据类名和参数类型数组获取构造函数
+     * @param cls
+     * @param parameterTypes
+     * @return
+     * @throws Exception
+     */
+    private static Constructor getConstructor(Class<?> cls, Class... parameterTypes)
+            throws Exception {
+
+        Constructor constructor = cls.getDeclaredConstructor(parameterTypes);
+
+
+        if (constructor == null) {
+            String constructorInfo=cls.getCanonicalName()+"";
+            for (int i=0;i<parameterTypes.length;i++){
+                Class clz=parameterTypes[i];
+
+                if (i==0){
+                    constructorInfo+="(";
+                }
+
+                constructorInfo+=clz.getCanonicalName();
+
+                if (i==parameterTypes.length-1){
+                    constructorInfo+=")";
+                }else {
+                    constructorInfo+=", ";
+                }
+            }
+            throw new RuntimeException("there is no such constructor:" + constructorInfo);
+        }
+
+        /**
+         *setAccessible是启用和禁用访问安全检查的开关，
+         *值为 true 则指示反射的对象在使用时应该取消 Java 语言访问检查，提升反射性能
+         *值为 false 则指示反射的对象应该实施 Java 语言访问检查。
+         */
+        constructor.setAccessible(true);
+
+        return constructor;
     }
 
     /**

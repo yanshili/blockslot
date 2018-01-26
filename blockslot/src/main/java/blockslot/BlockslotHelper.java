@@ -25,6 +25,27 @@ class BlockslotHelper {
     }
 
     /**
+     * 根据tag标志反射调用构造函数
+     *
+     * @param slotTag
+     * @param parameters
+     * @param <T>
+     * @return
+     */
+    public <T> T newInstance(String slotTag, Object... parameters) {
+
+        MethodInfo methodInfo = getMethodInfoWithSlotTag(slotTag);
+        Class clz = methodInfo.getClz();
+        Class[] parameterTypes = methodInfo.getParameterTypes();
+
+        try {
+            return (T) BlockslotReflectUtils.newInstance(clz, parameterTypes, parameters);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
      * 根据tag标志反射调用静态函数
      *
      * @param slotTag

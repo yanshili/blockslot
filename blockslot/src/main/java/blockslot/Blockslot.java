@@ -31,7 +31,7 @@ public class Blockslot {
     }
 
     /**
-     * 连接{@param slotTag}对应的插槽位（调用静态函数）
+     * 连接{@param slotTag}对应的插槽位（调用普通函数）
      *
      * @param target        指定插槽所在类的实例
      * @param slotTag       插槽标志（每个插槽对应的标志都不能相同，格式(module#slotTag)）
@@ -42,6 +42,20 @@ public class Blockslot {
     public static  <T> T invoke(Object target, String slotTag, Object... parameters) {
 
         return BlockslotHelper.getInstance().invoke(target, slotTag, parameters);
+
+    }
+
+    /**
+     * 连接{@param slotTag}对应的插槽位（调用构造函数）
+     *
+     * @param slotTag       插槽标志（每个插槽对应的标志都不能相同，格式(module#slotTag)）
+     * @param parameters    参数列表（可以少传参数，但类型不能传错，少传的参数会根据基本数据类型设置默认参数）
+     * @param <T>           返回的数据类型
+     * @return
+     */
+    public static  <T> T newInstance(String slotTag, Object... parameters) {
+
+        return BlockslotHelper.getInstance().newInstance(slotTag, parameters);
 
     }
 }

@@ -13,7 +13,7 @@ import blockslot.compiler.model.MethodInfo;
  * 描述： 模块插槽代码生成器辅助类
  */
 
-public class GeneratorBlockslotFileHelper {
+public class FileMethodSlotHelper {
 
     public static void generateFile(JavaFileObject jfo, String javaCodeStr) throws Exception {
         Writer writer = jfo.openWriter();

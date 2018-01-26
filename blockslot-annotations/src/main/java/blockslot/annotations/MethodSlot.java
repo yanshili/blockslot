@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
  * 邮箱： shili_yan@sina.com
  * 描述： 模块插槽注解（指定插槽标志）
  */
-@Target(ElementType.METHOD)
+@Target({ElementType.METHOD,ElementType.CONSTRUCTOR})
 @Retention(RetentionPolicy.CLASS)
 public @interface MethodSlot {
     //格式(module#slotTag)
