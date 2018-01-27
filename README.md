@@ -6,4 +6,4 @@
 * 使用： compile 'me.mooney:blockslot:0.2.0'
 * 注意： 
 * 1、混淆时添加-keep class blockslot.** {*;}
-* 2、设置插槽标志时每个插槽对应的标志都不能相同，只能含有一个字符"#"，并且不可放在首部或尾部格式(module#slotTag)）
+* 2、设置插槽标志（格式：module#slotTag）时每个插槽对应的标志都不能相同，只能含有一个字符"#"，并且不可放在首部或尾部
