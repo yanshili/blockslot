@@ -19,8 +19,13 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
+        maven{
+            url "https://dl.bintray.com/mooney/blockslot"
+        }
     }
 }
+
+
 
 task clean(type: Delete) {
     delete rootProject.buildDir

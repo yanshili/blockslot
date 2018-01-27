@@ -29,6 +29,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
 
 
-    compile project(':blockslot')
+//    compile project(':blockslot')
+    compile 'me.mooney:blockslot:0.2.0'
 
 }

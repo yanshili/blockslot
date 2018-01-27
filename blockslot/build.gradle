@@ -27,9 +27,11 @@ dependencies {
     })
     testCompile 'junit:junit:4.12'
 
-    compile project(':blockslot-compiler')
-    compile project(':blockslot-annotations')
+//    compile project(':blockslot-compiler')
+//    compile project(':blockslot-annotations')
+    compile 'me.mooney:blockslot-compiler:0.2.0'
+    compile 'me.mooney:blockslot-annotations:0.2.0'
 
 }
 
-//apply from: rootProject.file('/blockslot/maven_publish.gradle')
+apply from: rootProject.file('/blockslot/maven_publish.gradle')
