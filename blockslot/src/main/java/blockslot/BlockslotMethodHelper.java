@@ -15,22 +15,22 @@ import blockslot.compiler.model.MethodInfo;
  * 描述： 函数调用辅助类（根据tag信息调用指定函数）
  */
 
-class BlockslotHelper {
+class BlockslotMethodHelper {
 
     private Map<String, Method> mMethodCache=new HashMap<>();
     private Map<String, MethodInfo> mMethodInfoCache=new HashMap<>();
     private Map<String, Class> mGeneratorClzCache =new HashMap<>();
 
 
-    private BlockslotHelper() {
+    private BlockslotMethodHelper() {
     }
 
-    public static BlockslotHelper getInstance() {
+    public static BlockslotMethodHelper getInstance() {
         return Holder.instance;
     }
 
     private static class Holder {
-        private static BlockslotHelper instance = new BlockslotHelper();
+        private static BlockslotMethodHelper instance = new BlockslotMethodHelper();
     }
 
     /**

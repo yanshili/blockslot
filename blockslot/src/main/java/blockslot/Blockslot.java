@@ -26,7 +26,7 @@ public class Blockslot {
      */
     public static  <T> T invokeS(String slotTag, Object... parameters) {
 
-        return BlockslotHelper.getInstance().invokeS(slotTag, parameters);
+        return BlockslotMethodHelper.getInstance().invokeS(slotTag, parameters);
 
     }
 
@@ -41,7 +41,7 @@ public class Blockslot {
      */
     public static  <T> T invoke(Object target, String slotTag, Object... parameters) {
 
-        return BlockslotHelper.getInstance().invoke(target, slotTag, parameters);
+        return BlockslotMethodHelper.getInstance().invoke(target, slotTag, parameters);
 
     }
 
@@ -55,7 +55,7 @@ public class Blockslot {
      */
     public static  <T> T newInstance(String slotTag, Object... parameters) {
 
-        return BlockslotHelper.getInstance().newInstance(slotTag, parameters);
+        return BlockslotMethodHelper.getInstance().newInstance(slotTag, parameters);
 
     }
 }
