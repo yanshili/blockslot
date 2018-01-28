@@ -70,7 +70,7 @@ class BlockslotHelper {
 
         try {
             return (T) getMethod(null, slotTag, methodInfo)
-                    .invoke(BlockslotReflectUtils.getRealParameters(parameterTypes,parameters));
+                    .invoke(null, BlockslotReflectUtils.getRealParameters(parameterTypes,parameters));
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -119,7 +119,7 @@ class BlockslotHelper {
 
                 methodInfo= (MethodInfo) clz
                         .getDeclaredMethod("getMethodInfo",  new Class[]{String.class})
-                        .invoke(slotTag);
+                        .invoke(null, slotTag);
 
                 mMethodInfoCache.put(slotTag, methodInfo);
             }
