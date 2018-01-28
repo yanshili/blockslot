@@ -2,13 +2,10 @@ package blockslot.compiler;
 
 import com.google.auto.service.AutoService;
 
-import java.util.HashMap;
 import java.util.LinkedHashSet;
-import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
-import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
@@ -28,9 +25,6 @@ import blockslot.annotations.MethodSlot;
 @AutoService(Processor.class)
 public class BlockslotProcessor extends AbstractProcessor {
 
-    private Map<String, String> fileMethodMap = new HashMap<>();
-
-    private Messager messager;
 
     private FileMethodSlotProxy mMethodSlotProxy;
 
@@ -38,7 +32,6 @@ public class BlockslotProcessor extends AbstractProcessor {
     public synchronized void init(ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
 
-        messager = processingEnv.getMessager();
         mMethodSlotProxy=new FileMethodSlotProxy(processingEnv);
     }
 
