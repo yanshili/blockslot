@@ -1,6 +1,11 @@
 package blockslot;
 
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
+
 import blockslot.compiler.model.MethodInfo;
 
 /**
@@ -11,6 +16,10 @@ import blockslot.compiler.model.MethodInfo;
  */
 
 class BlockslotHelper {
+
+    private Map<String, Method> mMethodCache=new HashMap<>();
+    private Map<String, MethodInfo> mMethodInfoCache=new HashMap<>();
+    private Map<String, Class> mGeneratorClzCache =new HashMap<>();
 
 
     private BlockslotHelper() {
@@ -39,7 +48,8 @@ class BlockslotHelper {
         Class[] parameterTypes = methodInfo.getParameterTypes();
 
         try {
-            return (T) BlockslotReflectUtils.newInstance(clz, parameterTypes, parameters);
+            Constructor constructor=BlockslotReflectUtils.getConstructor(clz, parameterTypes);
+            return (T)constructor.newInstance(parameters);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -56,11 +66,15 @@ class BlockslotHelper {
     public <T> T invokeS(String slotTag, Object... parameters) {
 
         MethodInfo methodInfo = getMethodInfoWithSlotTag(slotTag);
-        Class clz = methodInfo.getClz();
-        String methodName = methodInfo.getMethodName();
         Class[] parameterTypes = methodInfo.getParameterTypes();
 
-        return (T) invokeS(clz, methodName, parameterTypes, parameters);
+        try {
+            return (T) getMethod(null, slotTag, methodInfo)
+                    .invoke(BlockslotReflectUtils.getRealParameters(parameterTypes,parameters));
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -75,48 +89,16 @@ class BlockslotHelper {
     public <T> T invoke(Object target, String slotTag, Object... parameters) {
 
         MethodInfo methodInfo = getMethodInfoWithSlotTag(slotTag);
-        String methodName = methodInfo.getMethodName();
         Class[] parameterTypes = methodInfo.getParameterTypes();
 
-        return (T) invoke(target, methodName, parameterTypes, parameters);
-    }
-
-
-    /**
-     * 反射调用普通函数
-     * @param target
-     * @param methodName
-     * @param parameterTypes
-     * @param parameters
-     * @param <T>
-     * @return
-     */
-    private <T> T invoke(Object target, String methodName, Class[] parameterTypes
-            , Object... parameters) {
         try {
-            return (T) BlockslotReflectUtils.invoke(target, methodName, parameterTypes, parameters);
+            return (T) getMethod(target, slotTag, methodInfo)
+                    .invoke(target,BlockslotReflectUtils.getRealParameters(parameterTypes, parameters));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    /**
-     * 反射调用静态函数
-     * @param clz
-     * @param methodName
-     * @param parameterTypes
-     * @param parameters
-     * @param <T>
-     * @return
-     */
-    private <T> T invokeS(Class<?> clz, String methodName, Class[] parameterTypes
-            , Object... parameters) {
-        try {
-            return (T) BlockslotReflectUtils.invokeS(clz, methodName, parameterTypes, parameters);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     /**
      * 根据插槽标志获取对应的函数信息
@@ -124,15 +106,60 @@ class BlockslotHelper {
      * @return
      */
     private MethodInfo getMethodInfoWithSlotTag(String slotTag){
+        slotTag=slotTag.replace(" ","");
 
         try {
-            slotTag=slotTag.replace(" ","");
-            Class clz= Class.forName(MethodInfo.generateClsPackage +"."+slotTag.substring(0, slotTag.indexOf("#")));
-            return BlockslotReflectUtils.invokeS(clz, "getMethodInfo", new Class[]{String.class},slotTag);
+            MethodInfo methodInfo=mMethodInfoCache.get(slotTag);
+            if (methodInfo==null){
+                Class clz = mGeneratorClzCache.get(slotTag);
+                if (clz==null){
+                    clz= Class.forName(MethodInfo.generateClsPackage +"."+slotTag.substring(0, slotTag.indexOf("#")));
+                    mGeneratorClzCache.put(slotTag, clz);
+                }
+
+                methodInfo= (MethodInfo) clz
+                        .getDeclaredMethod("getMethodInfo",  new Class[]{String.class})
+                        .invoke(slotTag);
+
+                mMethodInfoCache.put(slotTag, methodInfo);
+            }
+            return methodInfo;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
+    }
+
+
+    /**
+     * 获取指定方法
+     * @param target
+     * @param slotTag
+     * @param methodInfo
+     * @return
+     * @throws Exception
+     */
+    private Method getMethod(Object target, String slotTag, MethodInfo methodInfo) throws Exception{
+        slotTag=slotTag.replace(" ","");
+
+        Method method=mMethodCache.get(slotTag);
+        if (method==null){
+
+            Class clz = methodInfo.getClz();
+            String methodName = methodInfo.getMethodName();
+            Class[] parameterTypes = methodInfo.getParameterTypes();
+
+            if (target==null){
+                method=BlockslotReflectUtils.getMethodS(clz,methodName,parameterTypes);
+            }else {
+                Class<?> cls = target.getClass();
+                method=BlockslotReflectUtils.getMethodS(cls,methodName,parameterTypes);
+            }
+
+            mMethodCache.put(slotTag, method);
+        }
+
+        return method;
     }
 
 }
