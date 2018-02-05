@@ -34,7 +34,10 @@ public class MainActivity extends AppCompatActivity {
         toast((String) Blockslot.invokeS("app#get","on clicks !!!"));
         Test test=Blockslot.newInstance("test#constructor",10);
         Log.e("MainActivity","test newInstance times=="+test.getTimes());
+        int t=20;
         test.setTimes(5);
+        Blockslot.invoke(test, "test#setTimes", t);
+        Log.e("MainActivity","test invoke times=="+t);
         int times=Blockslot.invoke(test,"test#getTimes");
         Log.e("MainActivity","test invoke times=="+times);
     }

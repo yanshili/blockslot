@@ -23,6 +23,7 @@ public class Test {
         return times;
     }
 
+    @MethodSlot("test#setTimes")
     public void setTimes(int times) {
         this.times = times;
     }

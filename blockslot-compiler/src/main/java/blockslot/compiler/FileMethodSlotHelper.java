@@ -65,23 +65,35 @@ public class FileMethodSlotHelper {
 
     private static String getSwitchCaseStr(MethodBean methodBean){
         String slotTag=methodBean.getSlotTag();
+        String returnClz=methodBean.getReturnClz();
         String methodName=methodBean.getMethodName();
         boolean isStatic=methodBean.isStaticMethod();
 
         StringBuilder sb=new StringBuilder();
-        sb.append(  "           case \"" +slotTag +"\":\n");
+        sb.append(  "            case \"" +slotTag +"\":\n");
 
         if (methodName.equals("<init>")){
             methodName="newInstance";
-
+            if (returnClz.equals("void")){
+                returnClz=methodBean.getClzName();
+            }
             isStatic=true;
 
         }
 
+
         if (isStatic){
-            sb.append(  "               return " +methodName +"(parameters);\n");
+            if (returnClz.equals("void")){
+                sb.append(  "                " +methodName +"(parameters);\n");
+            }else {
+                sb.append(  "                return " +methodName +"(parameters);\n");
+            }
         }else {
-            sb.append(  "               return " +methodName +"((" + methodBean.getClzName() + ")target, parameters);\n");
+            if (returnClz.equals("void")){
+                sb.append(  "                " +methodName +"((" + methodBean.getClzName() + ")target, parameters);\n");
+            }else {
+                sb.append(  "                return " +methodName +"((" + methodBean.getClzName() + ")target, parameters);\n");
+            }
         }
 
         return sb.toString();
@@ -112,7 +124,7 @@ public class FileMethodSlotHelper {
             targetStr=methodBean.getClzName()+" target, ";
         }
 
-        sb.append(  "   private static " +returnClz + " " +methodName+ "(" + targetStr+"Object... parameters){\n\n");
+        sb.append(  "    private static " +returnClz + " " +methodName+ "(" + targetStr+"Object... parameters){\n\n");
 
         String parameterTypes="";
         for (int i=0;i<methodBean.getParameterTypes().length;i++){
@@ -122,8 +134,8 @@ public class FileMethodSlotHelper {
                 parameterTypes=parameterTypes+methodBean.getParameterTypes()[i]+".class";
             }
         }
-        sb.append(  "       Class[] parameterTypes = new Class[]{"+ parameterTypes + "};\n");
-        sb.append(  "       Object[] realParameters = BlockslotParameterUtils.getRealParameters(parameterTypes, parameters);\n");
+        sb.append(  "        Class[] parameterTypes = new Class[]{"+ parameterTypes + "};\n");
+        sb.append(  "        Object[] realParameters = BlockslotParameterUtils.getRealParameters(parameterTypes, parameters);\n");
         String varStr="";
         for (int i=0;i<parameters.length;i++){
             if (i!=parameters.length-1){
