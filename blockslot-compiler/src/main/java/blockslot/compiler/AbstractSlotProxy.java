@@ -45,7 +45,7 @@ public abstract class AbstractSlotProxy {
 
     private void l(Diagnostic.Kind kind, String str){
 
-        str=getClass().getName()+"-->"+str;
+        str=getClass().getName()+"-->\n"+str;
         //输出日志
         messager.printMessage(kind, str);
     }

@@ -55,7 +55,7 @@ public class Blockslot {
      */
     public static  <T> T newInstance(String slotTag, Object... parameters) {
 
-        return BlockslotHelper.getInstance().newInstance(slotTag, parameters);
+        return BlockslotHelper.getInstance().invokeS(slotTag, parameters);
 
     }
 }

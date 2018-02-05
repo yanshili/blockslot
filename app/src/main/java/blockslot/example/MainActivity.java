@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     @OnClick(R.id.tv_main)
     protected void onTvMainClick(){
         toast((String) Blockslot.invokeS("app#get","on clicks !!!"));
-        Test test=Blockslot.newInstance("test#constructor",23);
+        Test test=Blockslot.newInstance("test#constructor",10);
         Log.e("MainActivity","test newInstance times=="+test.getTimes());
         test.setTimes(5);
         int times=Blockslot.invoke(test,"test#getTimes");
@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @MethodSlot("app#get")
-    private static String getMessage(String m){
+    public static String getMessage(String m){
         return "slot message=="+m;
     }
 }

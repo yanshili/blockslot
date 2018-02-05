@@ -16,7 +16,8 @@ import javax.lang.model.type.TypeMirror;
 import javax.tools.JavaFileObject;
 
 import blockslot.annotations.MethodSlot;
-import blockslot.compiler.model.MethodInfo;
+import blockslot.compiler.model.FileBean;
+import blockslot.compiler.model.MethodBean;
 
 /**
  * 作者： mooney
@@ -27,7 +28,7 @@ import blockslot.compiler.model.MethodInfo;
 
 public class FileMethodSlotProxy extends AbstractSlotProxy{
 
-    private Map<String, String> fileMethodMap = new HashMap<>();
+    private Map<String, FileBean> fileMethodMap = new HashMap<>();
 
     public FileMethodSlotProxy(ProcessingEnvironment processingEnv) {
         super(processingEnv);
@@ -35,6 +36,7 @@ public class FileMethodSlotProxy extends AbstractSlotProxy{
 
     @Override
     public void process(Set<? extends Element> elements) {
+
         for (Element element : elements) {
 
 
@@ -50,12 +52,17 @@ public class FileMethodSlotProxy extends AbstractSlotProxy{
             /**
              * 生成的Java类名
              */
-            String javaFileName= MethodInfo.generateClsPackage +"." + slotTag.substring(0,slotTag.indexOf("#"));
+            String javaFileName= slotTag.substring(0,slotTag.indexOf("#"));
 
             /**
              * 函数名称
              */
             String methodName = element.getSimpleName().toString();
+
+            /**
+             * 函数返回类型
+             */
+            String returnType=executableElement.getReturnType().toString();
 
             /**
              * 获取类名
@@ -66,8 +73,8 @@ public class FileMethodSlotProxy extends AbstractSlotProxy{
             /**
              * 获取参数类型列表字符串
              */
-            StringBuilder parameterStr = new StringBuilder();
             List<? extends VariableElement> list = executableElement.getParameters();
+            String[] parameterArray=new String[list.size()];
             for (int i = 0; i < list.size(); i++) {
 
                 VariableElement variableElement = list.get(i);
@@ -77,16 +84,8 @@ public class FileMethodSlotProxy extends AbstractSlotProxy{
 
                 String parameterType = methodParameterType.toString();
 
+                parameterArray[i]=parameterType;
 
-                if (i == 0) {
-                    parameterStr.append(", ");
-                }
-
-                parameterStr.append(parameterType+".class");
-
-                if (i != list.size() - 1) {
-                    parameterStr.append(", ");
-                }
             }
 
             /**
@@ -102,51 +101,32 @@ public class FileMethodSlotProxy extends AbstractSlotProxy{
                 }
             }
 
-            /**
-             * 如果为静态函数或构造函数，则设置类全名，否则不设置类名
-             */
-            String encloseClzName=null;
-            if (staticMethod||methodName.equals("<init>")){
-                encloseClzName=clzFullName+".class";
+            FileBean fileBean=fileMethodMap.get(javaFileName);
+            if (fileBean==null){
+                fileBean=new FileBean(javaFileName);
+                fileMethodMap.put(javaFileName, fileBean);
             }
+            MethodBean methodBean=new MethodBean(clzFullName, slotTag,returnType, methodName
+                    , parameterArray, staticMethod);
+            fileBean.getMethodList().add(methodBean);
 
-            /**
-             * 如果为构造函数，则不设置方法名
-             */
-            if (methodName.equals("<init>")){
-                methodName=null;
-            }
-
-            /**
-             * 缓存getMethodInfo方法字符串
-             */
-            String methodPutStr= fileMethodMap.get(javaFileName);
-            if (methodPutStr==null){
-                methodPutStr="";
-            }
-            methodPutStr=methodPutStr
-                    + FileMethodSlotHelper
-                    .generatePutMethod(slotTag, methodName, encloseClzName, parameterStr.toString());
-            fileMethodMap.put(javaFileName, methodPutStr);
-
-            log("BlockslotProcessor " + "slotTag==" + slotTag
-                    + "   javaFileName==" + javaFileName
-                    + "\nmethod==" + clzFullName + "#" + methodName + "(" + parameterStr + ")");
+            log("slotTag==" + slotTag
+                    + "\njavaFileName==" + javaFileName
+                    + "\nreturnType=="+returnType
+                    + "\nmethod==" + clzFullName + "#" + methodName + "(" + parameterArray.toString() + ")");
         }
 
-        Iterator<Map.Entry<String,String>> iterator= fileMethodMap.entrySet().iterator();
+        Iterator<Map.Entry<String,FileBean>> iterator= fileMethodMap.entrySet().iterator();
 
         while (iterator.hasNext()){
-            Map.Entry<String,String> entry=iterator.next();
+            Map.Entry<String,FileBean> entry=iterator.next();
             String fileName=entry.getKey();
-            String methodPutStr=entry.getValue();
+            FileBean fileBean=entry.getValue();
 
-            String javaStr = FileMethodSlotHelper
-                    .generateJavaCode(fileName, methodPutStr).toString();
+            String javaStr = FileMethodSlotHelper.generateJavaCode(fileBean);
             try {
-
                 JavaFileObject jfo = processingEnv.getFiler().createSourceFile(
-                        fileName);
+                        fileBean.getPath()+"."+fileName);
 
                 FileMethodSlotHelper.generateFile(jfo, javaStr);
             } catch (Exception e) {
@@ -172,6 +152,5 @@ public class FileMethodSlotProxy extends AbstractSlotProxy{
                     + "\n**************************************************");
         }
     }
-
 
 }
