@@ -29,9 +29,9 @@ dependencies {
 
 //    compile project(':blockslot-compiler')
 //    compile project(':blockslot-annotations')
-    compile 'me.mooney:blockslot-compiler:1.0.1'
+    compile 'me.mooney:blockslot-compiler:1.0.2'
     compile 'me.mooney:blockslot-annotations:0.2.0'
 
 }
 
-apply from: rootProject.file('/blockslot/maven_publish.gradle')
+//apply from: rootProject.file('/blockslot/maven_publish.gradle')

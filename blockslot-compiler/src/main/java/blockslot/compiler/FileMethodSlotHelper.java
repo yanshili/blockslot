@@ -85,12 +85,14 @@ public class FileMethodSlotHelper {
         if (isStatic){
             if (returnClz.equals("void")){
                 sb.append(  "                " +methodName +"(parameters);\n");
+                sb.append(  "                return null;\n");
             }else {
                 sb.append(  "                return " +methodName +"(parameters);\n");
             }
         }else {
             if (returnClz.equals("void")){
                 sb.append(  "                " +methodName +"((" + methodBean.getClzName() + ")target, parameters);\n");
+                sb.append(  "                return null;\n");
             }else {
                 sb.append(  "                return " +methodName +"((" + methodBean.getClzName() + ")target, parameters);\n");
             }
@@ -135,7 +137,7 @@ public class FileMethodSlotHelper {
             }
         }
         sb.append(  "        Class[] parameterTypes = new Class[]{"+ parameterTypes + "};\n");
-        sb.append(  "        Object[] realParameters = BlockslotParameterUtils.getRealParameters(parameterTypes, parameters);\n");
+        sb.append(  "        Object[] realParameters = BlockslotParameterUtils.getRealParameters(parameterTypes, parameters);\n                ");
         String varStr="";
         for (int i=0;i<parameters.length;i++){
             if (i!=parameters.length-1){
